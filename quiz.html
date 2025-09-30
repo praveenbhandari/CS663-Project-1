@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="interactive.html" class="nav-link">Interactive Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="quiz.html" class="nav-link active">Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <section class="content-header">
+            <div class="container">
+                <h1>PCB Defect Detection Quiz</h1>
+                <p>Test your knowledge of computer vision techniques and machine learning for automated PCB inspection</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="quiz-intro content-section">
+                    <h2>Welcome to the Quiz!</h2>
+                    <p>This quiz covers key concepts from the PCB Defect Detection tutorial, including:</p>
+                    <ul>
+                        <li>Common PCB defect types and their characteristics</li>
+                        <li>OpenCV techniques for defect detection</li>
+                        <li>Machine learning approaches and hybrid systems</li>
+                        <li>Performance metrics and system architecture</li>
+                        <li>Challenges and solutions in automated inspection</li>
+                    </ul>
+                    <p><strong>Instructions:</strong> Select the best answer for each question. You'll receive immediate feedback and can see your final score at the end.</p>
+                </section>
+
+                <div class="quiz-score-display">
+                    <div class="score-card">
+                        <h3>Your Score</h3>
+                        <div class="score-value">
+                            <span id="current-score">0</span>/<span id="total-questions">15</span>
+                        </div>
+                        <div class="score-percentage" id="score-percentage">0%</div>
+                    </div>
+                </div>
+
+                <div id="quiz-container">
+                    <!-- Questions will be dynamically loaded here -->
+                </div>
+
+                <div class="quiz-results" id="quiz-results" style="display: none;">
+                    <h2>Quiz Complete!</h2>
+                    <div class="results-summary">
+                        <div class="result-stat">
+                            <h3>Final Score</h3>
+                            <p class="result-value" id="final-score">0/15</p>
+                        </div>
+                        <div class="result-stat">
+                            <h3>Percentage</h3>
+                            <p class="result-value" id="final-percentage">0%</p>
+                        </div>
+                        <div class="result-stat">
+                            <h3>Grade</h3>
+                            <p class="result-value" id="final-grade">-</p>
+                        </div>
+                    </div>
+                    <div class="result-message" id="result-message"></div>
+                    <button class="btn btn-primary" onclick="resetQuiz()">Retake Quiz</button>
+                    <a href="index.html" class="btn btn-secondary">Back to Home</a>
+                </div>
+
+                <div class="navigation-links">
+                    <a href="interactive.html" class="btn btn-secondary">← Previous: Interactive Demo</a>
+                    <a href="bibliography.html" class="btn btn-primary">Next: Bibliography →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A comprehensive guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                        <li><a href="quiz.html">Quiz</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
