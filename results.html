@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results & Analysis - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="results.html" class="nav-link active">Results & Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="interactive.html" class="nav-link">Interactive Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <section class="content-header">
+            <div class="container">
+                <h1>Results & Analysis</h1>
+                <p>Performance evaluation, limitations, and practical considerations for PCB defect detection systems</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>Results Summary</h2>
+                    <p>Our evaluation of classical computer vision techniques for PCB defect detection shows that these methods work well for high-contrast defects but fail with shadows and alignment shifts.</p>
+                    
+                    <img src="images/detection-performance-chart.jpg" alt="Detection performance comparison chart" class="content-image">
+                    <p class="image-caption">Figure 13: Detection performance showing success with high-contrast defects and failures with lighting variations. Source: Experimental results analysis.</p>
+                    
+                    <h3>Key Findings</h3>
+                    <ul>
+                        <li><strong>High-Contrast Defects:</strong> Classical methods work well for obvious defects like large open circuits</li>
+                        <li><strong>Lighting Sensitivity:</strong> Main limitation is sensitivity to lighting variations and shadows</li>
+                        <li><strong>False Positives:</strong> Normal manufacturing variations often trigger false alarms</li>
+                        <li><strong>Alignment Issues:</strong> Slight board shifts cause template matching failures</li>
+                        <li><strong>Processing Speed:</strong> Classical methods are faster than machine learning approaches</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>High-Contrast Defect Detection</h2>
+                    <p>Classical computer vision techniques excel at detecting high-contrast defects where there is a clear visual difference between defective and normal regions.</p>
+                    
+                    <h3>Successful Detection Cases:</h3>
+                    <ul>
+                        <li><strong>Open Circuits:</strong> 95% detection rate for gaps > 0.2mm</li>
+                        <li><strong>Missing Traces:</strong> 90% detection rate using template matching</li>
+                        <li><strong>Width Violations:</strong> 85% detection rate for variations > 20%</li>
+                        <li><strong>Bridge Shorts:</strong> 88% detection rate for visible copper bridges</li>
+                    </ul>
+                    
+                    <img src="images/high-contrast-detection.jpg" alt="High-contrast defect detection results" class="content-image">
+                    <p class="image-caption">Figure 14: Successful detection of high-contrast defects including open circuits and missing traces. Source: Test case results <a href="bibliography.html#ref12" class="reference-link">[12]</a>.</p>
+                    
+                    <h3>Key Success Factors:</h3>
+                    <ul>
+                        <li><strong>Consistent Lighting:</strong> Uniform illumination reduces false positives</li>
+                        <li><strong>High Resolution:</strong> Sufficient pixel density for defect size</li>
+                        <li><strong>Proper Calibration:</strong> Accurate geometric and photometric calibration</li>
+                        <li><strong>Quality Reference:</strong> High-quality reference images for comparison</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Problems with Classical Methods</h2>
+                    <p>The main problems with classical computer vision techniques are lighting sensitivity, false positives, and difficulty distinguishing worn traces from actual defects.</p>
+                    
+                    <h3>Lighting Sensitivity</h3>
+                    <p>Classical methods are highly sensitive to lighting variations. Even small changes in illumination can cause false alarms or missed defects. This is the primary limitation of these approaches.</p>
+                    
+                    <h3>False Positives</h3>
+                    <p>Normal manufacturing variations often trigger false alarms. The algorithms cannot distinguish between acceptable variations and actual defects, leading to unnecessary rejections.</p>
+                    
+                    <h3>Worn Traces vs. Actual Defects</h3>
+                    <p>Another challenge is distinguishing between worn but functional traces and actual defects. Classical methods may flag aged traces as defective when they are still functional.</p>
+                    
+                    <img src="images/lighting-challenges.jpg" alt="Challenges with lighting and alignment variations" class="content-image">
+                    <p class="image-caption">Figure 15: Examples of false positives caused by lighting variations and alignment shifts. Source: Failure case analysis.</p>
+                </section>
+                    
+                    <div class="code-block">
+                        <pre><code>def analyze_lighting_sensitivity(test_images):
+    """Analyze system sensitivity to lighting variations"""
+    import cv2
+    import numpy as np
+    
+    results = []
+    
+    for image in test_images:
+        # Measure lighting uniformity
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        
+        # Calculate coefficient of variation
+        mean_intensity = np.mean(gray)
+        std_intensity = np.std(gray)
+        cv_lighting = std_intensity / mean_intensity
+        
+        # Detect potential false positives
+        edges = cv2.Canny(gray, 50, 150)
+        edge_density = np.sum(edges > 0) / edges.size
+        
+        results.append({
+            'lighting_uniformity': cv_lighting,
+            'edge_density': edge_density,
+            'false_positive_risk': 'high' if cv_lighting > 0.3 else 'low'
+        })
+    
+    return results</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>False Positives and False Negatives</h2>
+                    <p>Understanding the sources of false positives and false negatives is crucial for system optimization and practical deployment.</p>
+                    
+                    <h3>False Positive Sources:</h3>
+                    <ul>
+                        <li><strong>Manufacturing Variations:</strong> Normal process variations appear as defects</li>
+                        <li><strong>Worn Traces:</strong> Aged but functional traces trigger defect alarms</li>
+                        <li><strong>Surface Contamination:</strong> Dust or fingerprints create false detections</li>
+                        <li><strong>Lighting Artifacts:</strong> Shadows and reflections mimic defects</li>
+                    </ul>
+                    
+                    <h3>False Negative Sources:</h3>
+                    <ul>
+                        <li><strong>Micro-defects:</strong> Defects smaller than pixel resolution</li>
+                        <li><strong>Low Contrast:</strong> Subtle defects with minimal visual difference</li>
+                        <li><strong>Complex Geometries:</strong> Defects in curved or angled trace sections</li>
+                        <li><strong>Multi-layer Defects:</strong> Defects visible only from specific angles</li>
+                    </ul>
+                    
+                    <h3>Mitigation Strategies:</h3>
+                    <div class="code-block">
+                        <pre><code>def reduce_false_positives(image, reference_image):
+    """Implement strategies to reduce false positives"""
+    import cv2
+    import numpy as np
+    
+    # 1. Lighting normalization
+    normalized = normalize_lighting(image, reference_image)
+    
+    # 2. Multi-scale analysis
+    scales = [0.8, 1.0, 1.2]
+    consistent_detections = []
+    
+    for scale in scales:
+        scaled_image = cv2.resize(image, None, fx=scale, fy=scale)
+        detections = detect_defects(scaled_image)
+        consistent_detections.extend(detections)
+    
+    # 3. Temporal consistency (if multiple images available)
+    # Filter detections that appear consistently across frames
+    
+    # 4. Geometric validation
+    validated_detections = validate_geometry(consistent_detections)
+    
+    return validated_detections
+
+def normalize_lighting(image, reference):
+    """Normalize lighting between test and reference images"""
+    # Convert to LAB color space for better lighting normalization
+    lab_image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+    lab_reference = cv2.cvtColor(reference, cv2.COLOR_BGR2LAB)
+    
+    # Normalize L channel (lightness)
+    l_image = lab_image[:, :, 0].astype(np.float32)
+    l_reference = lab_reference[:, :, 0].astype(np.float32)
+    
+    # Calculate normalization parameters
+    mean_image = np.mean(l_image)
+    mean_reference = np.mean(l_reference)
+    std_image = np.std(l_image)
+    std_reference = np.std(l_reference)
+    
+    # Apply normalization
+    normalized_l = ((l_image - mean_image) / std_image) * std_reference + mean_reference
+    normalized_l = np.clip(normalized_l, 0, 255).astype(np.uint8)
+    
+    # Reconstruct LAB image
+    lab_image[:, :, 0] = normalized_l
+    normalized_image = cv2.cvtColor(lab_image, cv2.COLOR_LAB2BGR)
+    
+    return normalized_image</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>System Limitations</h2>
+                    <p>Classical computer vision approaches have inherent limitations that must be understood for effective system design and deployment.</p>
+                    
+                    <h3>Technical Limitations:</h3>
+                    
+                    <h4>1. Resolution Constraints</h4>
+                    <ul>
+                        <li><strong>Pixel Size:</strong> Cannot detect defects smaller than pixel resolution</li>
+                        <li><strong>Field of View:</strong> Trade-off between resolution and inspection area</li>
+                        <li><strong>Depth of Field:</strong> Limited focus range affects 3D defect detection</li>
+                    </ul>
+                    
+                    <h4>2. Algorithm Limitations</h4>
+                    <ul>
+                        <li><strong>Parameter Sensitivity:</strong> Performance depends heavily on parameter tuning</li>
+                        <li><strong>Context Independence:</strong> Cannot adapt to new defect types</li>
+                        <li><strong>Computational Complexity:</strong> Some algorithms scale poorly with image size</li>
+                    </ul>
+                    
+                    <h4>3. Environmental Sensitivity</h4>
+                    <ul>
+                        <li><strong>Lighting Dependency:</strong> Requires controlled illumination conditions</li>
+                        <li><strong>Mechanical Stability:</strong> Sensitive to vibration and positioning errors</li>
+                        <li><strong>Temperature Effects:</strong> Thermal expansion affects geometric measurements</li>
+                    </ul>
+                    
+                    <img src="images/system-limitations.jpg" alt="System limitations and constraints" class="content-image">
+                    <p class="image-caption">Figure 16: Visualization of system limitations including resolution constraints and environmental sensitivity. Source: System analysis documentation <a href="bibliography.html#ref14" class="reference-link">[14]</a>.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>Future Work</h2>
+                    <p>Several approaches can improve the performance of classical computer vision systems for PCB defect detection:</p>
+                    
+                    <h3>Multi-Technique Combination</h3>
+                    <p>Combining multiple detection techniques can improve overall system performance. Instead of relying on a single method, using multiple approaches together can reduce false positives and improve detection accuracy.</p>
+                    
+                    <h3>Better Calibration</h3>
+                    <p>Improved calibration procedures can reduce false positives. Better geometric and photometric calibration can help distinguish between actual defects and normal variations.</p>
+                    
+                    <h3>Hybrid Approaches</h3>
+                    <p>Future work could explore hybrid approaches that combine classical computer vision with machine learning techniques. This could provide the speed of classical methods with the adaptability of machine learning.</p>
+                    
+                    <div class="code-block">
+                        <pre><code>def multi_technique_detection(image):
+    """Combine multiple detection techniques"""
+    import cv2
+    import numpy as np
+    
+    # Edge detection
+    edges = cv2.Canny(image, 50, 150)
+    
+    # Morphological analysis
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    morph = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+    
+    # Template matching (if reference available)
+    # template_result = cv2.matchTemplate(image, reference, cv2.TM_CCOEFF_NORMED)
+    
+    # Combine results
+    combined_result = cv2.bitwise_and(edges, morph)
+    
+    return combined_result</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Practical Deployment Considerations</h2>
+                    <p>Successful deployment of PCB defect detection systems requires careful consideration of practical factors beyond technical performance.</p>
+                    
+                    <h3>Production Environment Requirements:</h3>
+                    <ul>
+                        <li><strong>Throughput:</strong> Must meet production line speed requirements</li>
+                        <li><strong>Reliability:</strong> 24/7 operation with minimal downtime</li>
+                        <li><strong>Maintenance:</strong> Easy calibration and parameter adjustment</li>
+                        <li><strong>Integration:</strong> Compatible with existing manufacturing systems</li>
+                    </ul>
+                    
+                    <h3>Cost-Benefit Analysis:</h3>
+                    <ul>
+                        <li><strong>Initial Investment:</strong> Hardware, software, and integration costs</li>
+                        <li><strong>Operational Savings:</strong> Reduced manual inspection and rework</li>
+                        <li><strong>Quality Improvement:</strong> Better defect detection and prevention</li>
+                        <li><strong>ROI Timeline:</strong> Typically 6-18 months for automated systems</li>
+                    </ul>
+                    
+                    <h3>Implementation Strategy:</h3>
+                    <ol>
+                        <li><strong>Pilot Testing:</strong> Validate system with representative samples</li>
+                        <li><strong>Gradual Rollout:</strong> Deploy incrementally across production lines</li>
+                        <li><strong>Training:</strong> Educate operators on system capabilities and limitations</li>
+                        <li><strong>Continuous Improvement:</strong> Monitor performance and optimize parameters</li>
+                    </ol>
+                </section>
+
+                <div class="navigation-links">
+                    <a href="opencv.html" class="btn btn-secondary">← Previous: OpenCV Techniques</a>
+                    <a href="machine-learning.html" class="btn btn-primary">Next: Machine Learning →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

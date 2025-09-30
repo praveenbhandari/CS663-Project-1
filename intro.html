@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link active">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="content-header">
+            <div class="container">
+                <h1>Introduction to PCB Trace Defects</h1>
+                <p>Understanding the fundamentals of printed circuit board trace defects and visual inspection</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>PCB Trace Defects</h2>
+                    <p>PCB traces are copper pathways connecting components on circuit boards. Breaks or cracks in these traces cause device failures. Manufacturing defects include open circuits (complete breaks), shorts (unwanted connections), micro-cracks, and missing traces.</p>
+                    
+                    <img src="images/pcb-traces-diagram.jpg" alt="PCB traces connecting components" class="content-image">
+                    <p class="image-caption">Figure 1: PCB traces connecting various electronic components. Source: Manufacturing inspection guidelines.</p>
+                    
+                    <p>This tutorial examines how OpenCV detects these problems without machine learning. The main challenge is that classical computer vision techniques are sensitive to lighting and alignment changes, producing false alarms when boards shift slightly or lighting varies.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>Why Visual Inspection is Needed</h2>
+                    <p>Visual inspection is needed because:</p>
+                    
+                    <ul>
+                        <li><strong>Quality Control:</strong> Detect defects before boards reach final assembly</li>
+                        <li><strong>Cost Reduction:</strong> Prevent defective products from reaching customers</li>
+                        <li><strong>Reliability:</strong> Ensure device functionality and longevity</li>
+                        <li><strong>Manufacturing Feedback:</strong> Identify process issues for improvement</li>
+                    </ul>
+                    
+                    <p>Manual inspection is slow and inconsistent. Automated systems using OpenCV provide faster, more reliable detection of PCB trace defects.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>Main Problems with Classical Methods</h2>
+                    <p>The main problems with classical computer vision techniques for PCB defect detection are:</p>
+                    
+                    <h3>Lighting Sensitivity</h3>
+                    <ul>
+                        <li><strong>Shadow Effects:</strong> Component shadows create false edge detections</li>
+                        <li><strong>Reflection Variations:</strong> Copper surface reflections affect detection</li>
+                        <li><strong>Non-uniform Illumination:</strong> Gradual brightness changes mimic defects</li>
+                    </ul>
+                    
+                    <h3>Alignment Issues</h3>
+                    <ul>
+                        <li><strong>Board Shifts:</strong> Slight movements cause template matching failures</li>
+                        <li><strong>Rotation Errors:</strong> Small angles affect geometric measurements</li>
+                        <li><strong>Scale Variations:</strong> Different magnification levels cause false differences</li>
+                    </ul>
+                    
+                    <img src="images/inspection-challenges.jpg" alt="Challenges in PCB inspection" class="content-image">
+                    <p class="image-caption">Figure 2: Examples of lighting variations and alignment issues that cause false alarms. Source: Manufacturing inspection case studies.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>OpenCV Techniques Covered</h2>
+                    <p>This tutorial covers the following OpenCV techniques for PCB defect detection:</p>
+                    
+                    <ul>
+                        <li><strong>Edge Detection:</strong> Finds trace boundaries and detects breaks</li>
+                        <li><strong>Morphological Operations:</strong> Checks trace width and spacing</li>
+                        <li><strong>Template Matching:</strong> Compares boards to reference images</li>
+                        <li><strong>Color Segmentation:</strong> Isolates copper from substrate</li>
+                        <li><strong>Hough Line Detection:</strong> Identifies straight-line segments</li>
+                    </ul>
+                    
+                    <p>These classical methods are faster than machine learning approaches and don't require training data, but they are sensitive to lighting and alignment changes.</p>
+                    
+                    <div class="code-block">
+                        <pre><code># Basic OpenCV setup for PCB inspection
+import cv2
+import numpy as np
+
+def load_pcb_image(image_path):
+    """Load PCB image for inspection"""
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return image, gray
+
+def preprocess_image(image):
+    """Apply basic preprocessing"""
+    # Reduce noise
+    blurred = cv2.GaussianBlur(image, (5, 5), 0)
+    # Improve contrast
+    equalized = cv2.equalizeHist(blurred)
+    return equalized</code></pre>
+                    </div>
+                </section>
+
+                <div class="navigation-links">
+                    <a href="index.html" class="btn btn-secondary">← Back to Home</a>
+                    <a href="defects.html" class="btn btn-primary">Next: Common Defects →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

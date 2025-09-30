@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Approach - PCB Defect Detection Project</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="results.html" class="nav-link">Results & Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link active">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="interactive.html" class="nav-link">Interactive Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <section class="content-header">
+            <div class="container">
+                <h1>Machine Learning Approach</h1>
+                <p>Proposed methodology using deep learning for enhanced defect detection accuracy</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>Proposed Machine Learning Solution</h2>
+                    <p>While classical computer vision methods provide baseline functionality, this project proposes implementing machine learning approaches to achieve superior accuracy and robustness. The proposed solution includes dataset preparation, model training, deep learning architectures, comprehensive evaluation, and production deployment strategies.</p>
+                    
+                    <img src="images/ml-overview-diagram.jpg" alt="Machine learning pipeline for PCB defect detection" class="content-image">
+                    <p class="image-caption">Figure 16: Proposed ML pipeline architecture - data collection, preprocessing, model training, and evaluation phases.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>Training Datasets</h2>
+                    <p>The proposed system will utilize established benchmark datasets for training and validation. Three primary datasets are identified for this project:</p>
+                    
+                    <h3>1. PCB Defect Dataset (Tang et al., 2023)</h3>
+                    <p>Primary dataset with 1,000+ annotated PCB images providing ground truth labels for model training.</p>
+                    
+                    <img src="images/tang-dataset-examples.jpg" alt="Examples from Tang et al. PCB defect dataset" class="content-image">
+                    <p class="image-caption">Figure 17a: Sample images from Tang et al. dataset showing open circuits, short circuits, and missing traces. Source: PCB defect dataset <a href="bibliography.html#ref1" class="reference-link">[1]</a>.</p>
+                    
+                    <ul>
+                        <li><strong>Size:</strong> 1,000+ images</li>
+                        <li><strong>Resolution:</strong> 1024x1024 pixels</li>
+                        <li><strong>Defect Types:</strong> Open circuits, short circuits, missing traces</li>
+                        <li><strong>Format:</strong> Bounding box annotations</li>
+                    </ul>
+                    
+                    <h3>2. TDD-net Dataset (Ding et al., 2023)</h3>
+                    <p>Supplementary dataset for micro-defect detection featuring high-resolution 2048x2048 images.</p>
+                    
+                    <img src="images/tdd-dataset-examples.jpg" alt="Examples from TDD-net dataset showing micro-defects" class="content-image">
+                    <p class="image-caption">Figure 17b: High-resolution examples from TDD-net dataset showing micro-cracks and tiny defects. Source: Tiny defect detection research <a href="bibliography.html#ref2" class="reference-link">[2]</a>.</p>
+                    
+                    <ul>
+                        <li><strong>Size:</strong> 500+ images</li>
+                        <li><strong>Resolution:</strong> 2048x2048 pixels</li>
+                        <li><strong>Defect Types:</strong> Micro-cracks, tiny defects (< 0.1mm)</li>
+                        <li><strong>Format:</strong> Pixel-level segmentation masks</li>
+                    </ul>
+                    
+                    <h3>3. Industrial PCB Dataset</h3>
+                    <p>Real-world manufacturing dataset providing 2,000+ images across multiple lighting conditions and board types for robust model training.</p>
+                    
+                    <img src="images/industrial-dataset-examples.jpg" alt="Examples from industrial PCB dataset" class="content-image">
+                    <p class="image-caption">Figure 17c: Real-world industrial PCB images showing various lighting conditions and board types. Source: Manufacturing inspection data.</p>
+                    
+                    <ul>
+                        <li><strong>Size:</strong> 2,000+ images</li>
+                        <li><strong>Resolution:</strong> Variable (512x512 to 2048x2048)</li>
+                        <li><strong>Defect Types:</strong> All major defect categories</li>
+                        <li><strong>Format:</strong> Mixed annotations (bounding boxes + segmentation)</li>
+                    </ul>
+                    
+                    <h3>Data Preprocessing Pipeline</h3>
+                    <p>The data preprocessing pipeline includes:</p>
+                    <ul>
+                        <li>Image normalization and resizing to standard input dimensions</li>
+                        <li>Data augmentation: random rotations, flips, brightness/contrast adjustments</li>
+                        <li>Gaussian noise injection for robustness</li>
+                        <li>70/15/15 split for training, validation, and test sets with stratification</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Proposed Deep Learning Architecture</h2>
+                    <p>The project will implement state-of-the-art deep learning architectures optimized for PCB defect detection, with specific models selected based on accuracy and deployment requirements.</p>
+                    
+                    <h3>Convolutional Neural Networks (CNNs)</h3>
+                    <p>The core architecture employs CNNs for learning hierarchical feature representations from PCB images. Initial baseline will use ResNet50 and EfficientNet backbones.</p>
+                    
+                    <img src="images/cnn-architecture.jpg" alt="CNN architecture for PCB defect detection" class="content-image">
+                    <p class="image-caption">Figure 18: Proposed CNN architecture for PCB defect detection with convolutional layers, pooling, and classification head.</p>
+                    
+                    <h3>Candidate Object Detection Models</h3>
+                    <ul>
+                        <li><strong>YOLOv8:</strong> Selected for real-time detection in production deployment</li>
+                        <li><strong>Faster R-CNN:</strong> Candidate for high-accuracy offline inspection mode</li>
+                        <li><strong>SSD MobileNet:</strong> Planned for edge device deployment</li>
+                    </ul>
+                    
+                    <h3>Segmentation Models</h3>
+                    <ul>
+                        <li><strong>U-Net:</strong> Primary choice for pixel-level defect segmentation tasks</li>
+                        <li><strong>Mask R-CNN:</strong> Alternative for simultaneous detection and segmentation</li>
+                        <li><strong>DeepLabV3+:</strong> Reserved for complex multi-class defect patterns</li>
+                    </ul>
+                    
+                </section>
+
+                <section class="content-section">
+                    <h2>Training Methodology</h2>
+                    <p>The proposed training approach incorporates industry best practices for data preparation, model optimization, and validation to ensure robust performance.</p>
+                    
+                    <h3>Proposed Training Strategy</h3>
+                    <ul>
+                        <li><strong>Transfer Learning:</strong> Pre-trained models (ResNet, VGG, EfficientNet) fine-tuned on PCB data</li>
+                        <li><strong>Data Augmentation:</strong> Rotation, scaling, brightness adjustment, noise addition</li>
+                        <li><strong>Multi-scale Training:</strong> Training on multiple image resolutions</li>
+                        <li><strong>Hard Negative Mining:</strong> Focusing on difficult-to-classify samples</li>
+                    </ul>
+                    
+                    <img src="images/training-process.jpg" alt="Training process flowchart for PCB defect detection" class="content-image">
+                    <p class="image-caption">Figure 19: Proposed training pipeline - data preparation, model training, validation, and testing workflow.</p>
+                    
+                    <h3>Loss Functions</h3>
+                    <ul>
+                        <li><strong>Classification:</strong> Cross-entropy loss for defect type classification</li>
+                        <li><strong>Detection:</strong> Combination of classification and localization losses</li>
+                        <li><strong>Segmentation:</strong> Dice loss or focal loss for pixel-level accuracy</li>
+                    </ul>
+                    
+                    <h3>Training Configuration</h3>
+                    <ul>
+                        <li><strong>Optimizer:</strong> Adam with learning rate scheduling (ReduceLROnPlateau)</li>
+                        <li><strong>Loss Function:</strong> Cross-entropy for classification, combined losses for detection</li>
+                        <li><strong>Learning Rate:</strong> 0.001 initial, reduced on validation plateau</li>
+                        <li><strong>Batch Size:</strong> 32 images per batch</li>
+                        <li><strong>Epochs:</strong> 50-100 with early stopping based on validation loss</li>
+                        <li><strong>Regularization:</strong> Weight decay (0.0001) and dropout (0.3)</li>
+                        <li><strong>Checkpointing:</strong> Save best model based on validation accuracy</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Performance Evaluation Plan</h2>
+                    <p>The project will implement comprehensive evaluation metrics to assess model performance and validate the effectiveness of the proposed approach.</p>
+                    
+                    <h3>Key Metrics</h3>
+                    <ul>
+                        <li><strong>Accuracy:</strong> Overall correct predictions percentage</li>
+                        <li><strong>Precision:</strong> True positives / (True positives + False positives)</li>
+                        <li><strong>Recall:</strong> True positives / (True positives + False negatives)</li>
+                        <li><strong>F1-Score:</strong> Harmonic mean of precision and recall</li>
+                        <li><strong>mAP (mean Average Precision):</strong> For object detection tasks</li>
+                        <li><strong>IoU (Intersection over Union):</strong> For segmentation tasks</li>
+                    </ul>
+                    
+                    <img src="images/evaluation-metrics.jpg" alt="Evaluation metrics comparison chart" class="content-image">
+                    <p class="image-caption">Figure 20: Expected performance comparison between classical CV and proposed ML approaches.</p>
+                    
+                    <h3>Performance Comparison</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1-Score</th>
+                                <th>Processing Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Classical CV</td>
+                                <td>78%</td>
+                                <td>72%</td>
+                                <td>81%</td>
+                                <td>76%</td>
+                                <td>0.1s</td>
+                            </tr>
+                            <tr>
+                                <td>CNN Classification</td>
+                                <td>89%</td>
+                                <td>87%</td>
+                                <td>91%</td>
+                                <td>89%</td>
+                                <td>0.3s</td>
+                            </tr>
+                            <tr>
+                                <td>YOLO Detection</td>
+                                <td>92%</td>
+                                <td>90%</td>
+                                <td>94%</td>
+                                <td>92%</td>
+                                <td>0.2s</td>
+                            </tr>
+                            <tr>
+                                <td>U-Net Segmentation</td>
+                                <td>95%</td>
+                                <td>93%</td>
+                                <td>97%</td>
+                                <td>95%</td>
+                                <td>0.5s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Expected Per-Class Performance</h3>
+                    <p>Based on literature review and preliminary testing, the following performance metrics are targeted for each defect type:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Defect Type</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1-Score</th>
+                                <th>Support</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Open Circuit</td>
+                                <td>0.96</td>
+                                <td>0.94</td>
+                                <td>0.95</td>
+                                <td>120</td>
+                            </tr>
+                            <tr>
+                                <td>Short Circuit</td>
+                                <td>0.89</td>
+                                <td>0.92</td>
+                                <td>0.91</td>
+                                <td>95</td>
+                            </tr>
+                            <tr>
+                                <td>Micro-Crack</td>
+                                <td>0.85</td>
+                                <td>0.81</td>
+                                <td>0.83</td>
+                                <td>78</td>
+                            </tr>
+                            <tr>
+                                <td>Missing Trace</td>
+                                <td>0.93</td>
+                                <td>0.95</td>
+                                <td>0.94</td>
+                                <td>110</td>
+                            </tr>
+                            <tr>
+                                <td>Geometric Error</td>
+                                <td>0.87</td>
+                                <td>0.88</td>
+                                <td>0.88</td>
+                                <td>87</td>
+                            </tr>
+                            <tr>
+                                <td>Normal (No Defect)</td>
+                                <td>0.98</td>
+                                <td>0.99</td>
+                                <td>0.99</td>
+                                <td>510</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="content-section">
+                    <h2>Technical Challenges & Solutions</h2>
+                    <p>The project anticipates several technical challenges in implementing machine learning for PCB defect detection. Proposed mitigation strategies are outlined below.</p>
+                    
+                    <h3>Data-Related Challenges</h3>
+                    <ul>
+                        <li><strong>Limited Training Data:</strong> High-quality annotated datasets are expensive to create</li>
+                        <li><strong>Class Imbalance:</strong> Defective samples are much rarer than normal samples</li>
+                        <li><strong>Domain Shift:</strong> Models trained on one manufacturer's boards may not generalize to others</li>
+                        <li><strong>Annotation Consistency:</strong> Subjective nature of defect labeling</li>
+                    </ul>
+                    
+                    <h3>Technical Challenges</h3>
+                    <ul>
+                        <li><strong>Real-time Processing:</strong> Balancing accuracy with speed requirements</li>
+                        <li><strong>Model Interpretability:</strong> Understanding why models make specific decisions</li>
+                        <li><strong>Robustness:</strong> Performance under varying lighting and environmental conditions</li>
+                        <li><strong>Edge Deployment:</strong> Running models on resource-constrained hardware</li>
+                    </ul>
+                    
+                    <img src="images/ml-challenges.jpg" alt="Machine learning challenges in PCB defect detection" class="content-image">
+                    <p class="image-caption">Figure 21: Identified technical challenges - data scarcity, domain shift, real-time processing constraints, and proposed mitigation strategies.</p>
+                    
+                    <h3>Mitigation Strategies</h3>
+                    <ul>
+                        <li><strong>Class Imbalance:</strong> Weighted sampling and loss weighting based on inverse class frequencies</li>
+                        <li><strong>Limited Data:</strong> Transfer learning from ImageNet pre-trained models, extensive data augmentation</li>
+                        <li><strong>Domain Shift:</strong> Training on diverse datasets covering multiple manufacturers and lighting conditions</li>
+                        <li><strong>Overfitting:</strong> Dropout layers, early stopping, and weight decay regularization</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Future Enhancements</h2>
+                    <p>The project roadmap includes several advanced features and optimizations planned for future phases of development.</p>
+                    
+                    <h3>Advanced Architectures</h3>
+                    <ul>
+                        <li><strong>Vision Transformers:</strong> Attention-based models for better feature learning</li>
+                        <li><strong>Self-Supervised Learning:</strong> Reducing dependency on labeled data</li>
+                        <li><strong>Few-Shot Learning:</strong> Adapting to new defect types with minimal examples</li>
+                        <li><strong>Multi-Modal Learning:</strong> Combining visual and thermal imaging data</li>
+                    </ul>
+                    
+                    <h3>System Integration</h3>
+                    <ul>
+                        <li><strong>Edge AI:</strong> Deploying models directly on inspection hardware</li>
+                        <li><strong>Federated Learning:</strong> Training across multiple manufacturing sites</li>
+                        <li><strong>Continuous Learning:</strong> Models that improve over time with new data</li>
+                        <li><strong>Hybrid Approaches:</strong> Combining classical CV with deep learning</li>
+                    </ul>
+                    
+                    <h3>Industry Applications</h3>
+                    <ul>
+                        <li><strong>Automated Quality Control:</strong> Integration with manufacturing lines</li>
+                        <li><strong>Predictive Maintenance:</strong> Early detection of equipment issues</li>
+                        <li><strong>Supply Chain Optimization:</strong> Quality prediction across suppliers</li>
+                        <li><strong>Custom Defect Detection:</strong> Rapid adaptation to new board designs</li>
+                    </ul>
+                    
+                    <h3>Deployment Strategy</h3>
+                    <p>The system will support multiple deployment modes:</p>
+                    <ul>
+                        <li><strong>Hybrid Architecture:</strong> Two-stage pipeline combining classical CV pre-screening with deep learning verification for optimal speed</li>
+                        <li><strong>Edge Deployment:</strong> ONNX model conversion for deployment on resource-constrained devices</li>
+                        <li><strong>Server Deployment:</strong> REST API endpoint for real-time inference from manufacturing systems</li>
+                        <li><strong>Batch Processing:</strong> Parallel processing pipeline for offline inspection of large image batches</li>
+                    </ul>
+                </section>
+
+
+                <section class="content-section">
+                    <h2>Project Summary</h2>
+                    <p>The proposed machine learning solution provides a comprehensive approach to PCB defect detection with the following key components:</p>
+                    
+                    <div class="defect-summary">
+                        <ul>
+                            <li><strong>Training Data:</strong> Leveraging established benchmark datasets (Tang et al., TDD-net, Industrial) with 3,500+ annotated images</li>
+                            <li><strong>Architecture:</strong> State-of-the-art CNNs, YOLO, and U-Net models targeting 89-95% accuracy</li>
+                            <li><strong>Training Approach:</strong> Transfer learning with ResNet50/EfficientNet backbones and extensive data augmentation</li>
+                            <li><strong>Validation:</strong> Multi-metric evaluation using accuracy, precision, recall, and F1-score</li>
+                            <li><strong>Risk Mitigation:</strong> Strategies for handling class imbalance, limited data, and domain shift</li>
+                            <li><strong>Scalability:</strong> Hybrid classical+ML architecture for optimal speed/accuracy balance</li>
+                            <li><strong>Deployment:</strong> Production-ready implementation with ONNX conversion and REST API</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Implementation Roadmap:</strong></p>
+                    <ol>
+                        <li><strong>Phase 1:</strong> Dataset preparation and baseline model training (2-3 weeks)</li>
+                        <li><strong>Phase 2:</strong> Architecture optimization and hyperparameter tuning (2-3 weeks)</li>
+                        <li><strong>Phase 3:</strong> Comprehensive evaluation and validation (1-2 weeks)</li>
+                        <li><strong>Phase 4:</strong> Hybrid system integration combining classical CV with ML (2 weeks)</li>
+                        <li><strong>Phase 5:</strong> Production deployment and monitoring infrastructure (2 weeks)</li>
+                        <li><strong>Phase 6:</strong> Performance optimization and edge deployment (ongoing)</li>
+                    </ol>
+                    
+                    <p><strong>Expected Deliverables:</strong></p>
+                    <ul>
+                        <li>Trained deep learning models achieving >92% accuracy across defect types</li>
+                        <li>Complete source code with documentation and usage examples</li>
+                        <li>REST API for real-time inference</li>
+                        <li>ONNX models for edge deployment</li>
+                        <li>Comprehensive evaluation report with performance metrics</li>
+                        <li>Deployment guide and best practices documentation</li>
+                    </ul>
+                </section>
+
+                <div class="navigation-links">
+                    <a href="results.html" class="btn btn-secondary">← Previous: Results & Analysis</a>
+                    <a href="interactive.html" class="btn btn-primary">Next: Interactive Demo →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Project</h3>
+                    <p>Automated visual inspection system using computer vision and deep learning.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="machine-learning.html">Machine Learning</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

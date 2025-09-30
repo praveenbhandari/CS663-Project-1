@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Demo - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="results.html" class="nav-link">Results & Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="interactive.html" class="nav-link active">Interactive Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="content-header">
+            <div class="container">
+                <h1>Interactive Demo</h1>
+                <p>Explore detection algorithms with hands-on demonstrations</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>Algorithm Demonstration</h2>
+                    <p>Explore how different OpenCV techniques perform on sample PCB images. Click the buttons below to see simulated results from each detection method.</p>
+                    
+                    <div class="interactive-demo">
+                        <h3>Detection Algorithm Simulator</h3>
+                        <p>Select a detection technique to see how it would analyze a PCB image:</p>
+                        
+                        <div class="demo-controls">
+                            <button class="demo-button" data-demo="edge">Canny Edge Detection</button>
+                            <button class="demo-button" data-demo="morphology">Morphological Analysis</button>
+                            <button class="demo-button" data-demo="template">Template Matching</button>
+                            <button class="demo-button" data-demo="hsv">HSV Segmentation</button>
+                            <button class="demo-button" data-demo="hough">Hough Line Detection</button>
+                        </div>
+                        
+                        <div class="demo-result">
+                            <p>Select a detection technique above to see the results...</p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <div class="navigation-links">
+                    <a href="machine-learning.html" class="btn btn-secondary">← Previous: Machine Learning</a>
+                    <a href="bibliography.html" class="btn btn-primary">Next: Bibliography →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

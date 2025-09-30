@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCV Techniques - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link active">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <section class="content-header">
+            <div class="container">
+                <h1>OpenCV Techniques for Defect Detection</h1>
+                <p>Implementation of classical computer vision algorithms for automated PCB trace inspection</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>Canny Edge Detection</h2>
+                    <p>Canny edge detection is fundamental for identifying trace boundaries and detecting breaks or discontinuities in PCB traces. The algorithm uses gradient information to find edges while suppressing noise.</p>
+                    
+                    <img src="images/canny-edge-detection.jpg" alt="Canny edge detection results on PCB traces" class="content-image">
+                    <p class="image-caption">Figure 10: Canny edge detection applied to PCB traces showing clear boundary detection. Source: Computer vision algorithm demonstration <a href="bibliography.html#ref8" class="reference-link">[8]</a>.</p>
+                    
+                    <h3>Algorithm Steps:</h3>
+                    <ol>
+                        <li><strong>Gaussian Smoothing:</strong> Reduce noise while preserving edges</li>
+                        <li><strong>Gradient Calculation:</strong> Compute intensity gradients using Sobel operators</li>
+                        <li><strong>Non-Maximum Suppression:</strong> Thin edges to single-pixel width</li>
+                        <li><strong>Double Thresholding:</strong> Classify pixels as strong, weak, or non-edges</li>
+                        <li><strong>Edge Tracking:</strong> Connect weak edges to strong edges</li>
+                    </ol>
+                    
+                    <div class="code-block">
+                        <pre><code>def canny_edge_detection(image, low_threshold=50, high_threshold=150):
+    """Apply Canny edge detection for PCB trace analysis"""
+    import cv2
+    import numpy as np
+    
+    # Convert to grayscale if needed
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image.copy()
+    
+    # Apply Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+    # Apply Canny edge detection
+    edges = cv2.Canny(blurred, low_threshold, high_threshold)
+    
+    # Optional: Apply morphological operations to clean up edges
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+    
+    return edges
+
+def analyze_edge_continuity(edges):
+    """Analyze edge continuity to detect breaks"""
+    # Find contours
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Analyze each contour for potential breaks
+    breaks = []
+    for contour in contours:
+        # Calculate contour properties
+        area = cv2.contourArea(contour)
+        perimeter = cv2.arcLength(contour, True)
+        
+        # Check for suspiciously short contours (potential breaks)
+        if area < 100 and perimeter < 50:
+            breaks.append(contour)
+    
+    return breaks</code></pre>
+                    </div>
+                    
+                    <h3>Parameter Optimization:</h3>
+                    <ul>
+                        <li><strong>Low Threshold:</strong> Controls sensitivity to weak edges (typically 50-100)</li>
+                        <li><strong>High Threshold:</strong> Controls sensitivity to strong edges (typically 150-300)</li>
+                        <li><strong>Gaussian Kernel Size:</strong> Balance between noise reduction and edge preservation</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Morphological Operations</h2>
+                    <p>Morphological operations are essential for analyzing trace geometry, detecting width variations, and identifying structural defects. These operations work on binary images to extract shape information.</p>
+                    
+                    <h3>Key Operations:</h3>
+                    
+                    <h4>1. Erosion and Dilation</h4>
+                    <p>Used to analyze trace width and detect narrow regions that might indicate defects:</p>
+                    
+                    <div class="code-block">
+                        <pre><code>def morphological_analysis(image):
+    """Perform morphological analysis for trace width detection"""
+    import cv2
+    import numpy as np
+    
+    # Convert to binary image
+    _, binary = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+    
+    # Create structuring elements
+    kernel_erode = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    
+    # Erosion to find narrow regions
+    eroded = cv2.erode(binary, kernel_erode, iterations=1)
+    
+    # Dilation to restore shape
+    dilated = cv2.dilate(eroded, kernel_dilate, iterations=1)
+    
+    # Find differences indicating width variations
+    width_variations = cv2.absdiff(binary, dilated)
+    
+    return width_variations, eroded, dilated</code></pre>
+                    </div>
+                    
+                    <h4>2. Opening and Closing</h4>
+                    <p>Opening removes small noise and separates connected components, while closing fills small gaps:</p>
+                    
+                    <div class="code-block">
+                        <pre><code>def opening_closing_operations(image):
+    """Apply opening and closing operations for noise removal"""
+    import cv2
+    
+    # Create structuring element
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    
+    # Opening: erosion followed by dilation
+    opened = cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+    
+    # Closing: dilation followed by erosion
+    closed = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+    
+    # Top-hat: original minus opened (highlights small bright features)
+    tophat = cv2.morphologyEx(image, cv2.MORPH_TOPHAT, kernel)
+    
+    # Black-hat: closed minus original (highlights small dark features)
+    blackhat = cv2.morphologyEx(image, cv2.MORPH_BLACKHAT, kernel)
+    
+    return opened, closed, tophat, blackhat</code></pre>
+                    </div>
+                    
+                    <img src="images/morphological-operations.jpg" alt="Morphological operations applied to PCB traces" class="content-image">
+                    <p class="image-caption">Figure 11: Morphological operations showing erosion, dilation, opening, and closing effects on PCB traces. Source: Image processing algorithm visualization <a href="bibliography.html#ref9" class="reference-link">[9]</a>.</p>
+                </section>
+
+                <section class="content-section">
+                    <h2>Template Matching</h2>
+                    <p>Template matching compares the inspected PCB against a reference image to identify deviations from the expected design. This technique is particularly effective for detecting missing traces and geometric errors.</p>
+                    
+                    <h3>Template Matching Process:</h3>
+                    <ol>
+                        <li><strong>Reference Image Preparation:</strong> Create high-quality reference template</li>
+                        <li><strong>Image Registration:</strong> Align inspected image with reference</li>
+                        <li><strong>Similarity Calculation:</strong> Compare corresponding regions</li>
+                        <li><strong>Threshold Analysis:</strong> Identify significant differences</li>
+                    </ol>
+                    
+                    <div class="code-block">
+                        <pre><code>def template_matching(reference_image, inspected_image):
+    """Perform template matching for defect detection"""
+    import cv2
+    import numpy as np
+    
+    # Convert to grayscale
+    ref_gray = cv2.cvtColor(reference_image, cv2.COLOR_BGR2GRAY)
+    insp_gray = cv2.cvtColor(inspected_image, cv2.COLOR_BGR2GRAY)
+    
+    # Resize images to same dimensions
+    ref_gray = cv2.resize(ref_gray, (insp_gray.shape[1], insp_gray.shape[0]))
+    
+    # Apply template matching
+    result = cv2.matchTemplate(insp_gray, ref_gray, cv2.TM_CCOEFF_NORMED)
+    
+    # Find locations where similarity is below threshold
+    threshold = 0.8
+    locations = np.where(result < threshold)
+    
+    # Create difference image
+    diff_image = cv2.absdiff(ref_gray, insp_gray)
+    
+    # Apply threshold to highlight significant differences
+    _, diff_thresh = cv2.threshold(diff_image, 30, 255, cv2.THRESH_BINARY)
+    
+    return diff_thresh, result, locations
+
+def multi_scale_template_matching(reference, inspected, scales=[0.8, 0.9, 1.0, 1.1, 1.2]):
+    """Perform multi-scale template matching for robust detection"""
+    best_match = None
+    best_score = 0
+    
+    for scale in scales:
+        # Resize reference image
+        h, w = reference.shape[:2]
+        new_h, new_w = int(h * scale), int(w * scale)
+        scaled_ref = cv2.resize(reference, (new_w, new_h))
+        
+        # Perform template matching
+        result = cv2.matchTemplate(inspected, scaled_ref, cv2.TM_CCOEFF_NORMED)
+        
+        # Find best match
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        
+        if max_val > best_score:
+            best_score = max_val
+            best_match = {
+                'scale': scale,
+                'location': max_loc,
+                'score': max_val
+            }
+    
+    return best_match</code></pre>
+                    </div>
+                    
+                    <h3>Challenges and Solutions:</h3>
+                    <ul>
+                        <li><strong>Scale Variations:</strong> Use multi-scale matching</li>
+                        <li><strong>Rotation:</strong> Apply rotation-invariant matching</li>
+                        <li><strong>Lighting Changes:</strong> Normalize images before comparison</li>
+                        <li><strong>Noise:</strong> Apply preprocessing filters</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>HSV Color Segmentation</h2>
+                    <p>HSV (Hue, Saturation, Value) color segmentation isolates copper traces from the substrate material, enabling more accurate defect detection by focusing on the relevant regions.</p>
+                    
+                    <img src="images/hsv-segmentation.jpg" alt="HSV color segmentation of PCB traces" class="content-image">
+                    <p class="image-caption">Figure 12: HSV color segmentation showing copper trace isolation from substrate. Source: Color space analysis documentation <a href="bibliography.html#ref10" class="reference-link">[10]</a>.</p>
+                    
+                    <h3>HSV Color Space Advantages:</h3>
+                    <ul>
+                        <li><strong>Intuitive:</strong> Separates color information from brightness</li>
+                        <li><strong>Robust:</strong> Less sensitive to lighting variations</li>
+                        <li><strong>Selective:</strong> Easy to isolate specific color ranges</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        <pre><code>def hsv_segmentation(image):
+    """Segment copper traces using HSV color space"""
+    import cv2
+    import numpy as np
+    
+    # Convert BGR to HSV
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # Define range for copper color in HSV
+    # Copper typically has low saturation and specific hue range
+    lower_copper = np.array([0, 20, 50])    # Lower bound
+    upper_copper = np.array([20, 255, 255]) # Upper bound
+    
+    # Create mask for copper regions
+    copper_mask = cv2.inRange(hsv, lower_copper, upper_copper)
+    
+    # Apply morphological operations to clean up mask
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    copper_mask = cv2.morphologyEx(copper_mask, cv2.MORPH_CLOSE, kernel)
+    copper_mask = cv2.morphologyEx(copper_mask, cv2.MORPH_OPEN, kernel)
+    
+    # Apply mask to original image
+    segmented_image = cv2.bitwise_and(image, image, mask=copper_mask)
+    
+    return segmented_image, copper_mask
+
+def adaptive_hsv_segmentation(image):
+    """Adaptive HSV segmentation that adjusts to lighting conditions"""
+    import cv2
+    import numpy as np
+    
+    # Convert to HSV
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # Calculate histogram for adaptive thresholding
+    hist_h = cv2.calcHist([hsv], [0], None, [180], [0, 180])
+    hist_s = cv2.calcHist([hsv], [1], None, [256], [0, 256])
+    
+    # Find dominant hue and saturation values
+    dominant_hue = np.argmax(hist_h)
+    dominant_sat = np.argmax(hist_s)
+    
+    # Create adaptive range around dominant values
+    hue_range = 15
+    sat_range = 50
+    
+    lower_adaptive = np.array([
+        max(0, dominant_hue - hue_range),
+        max(0, dominant_sat - sat_range),
+        50
+    ])
+    upper_adaptive = np.array([
+        min(179, dominant_hue + hue_range),
+        255,
+        255
+    ])
+    
+    # Create adaptive mask
+    adaptive_mask = cv2.inRange(hsv, lower_adaptive, upper_adaptive)
+    
+    return adaptive_mask</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Hough Line Detection</h2>
+                    <p>Hough line detection identifies straight-line segments in PCB traces, useful for detecting breaks, misalignments, and geometric deviations from expected straight-line patterns.</p>
+                    
+                    <h3>Hough Transform Principles:</h3>
+                    <ul>
+                        <li><strong>Parameter Space:</strong> Maps lines to points in (ρ, θ) space</li>
+                        <li><strong>Voting Mechanism:</strong> Accumulates votes for line parameters</li>
+                        <li><strong>Peak Detection:</strong> Finds dominant lines in parameter space</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        <pre><code>def hough_line_detection(image):
+    """Detect lines in PCB traces using Hough transform"""
+    import cv2
+    import numpy as np
+    
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply edge detection
+    edges = cv2.Canny(gray, 50, 150)
+    
+    # Apply Hough line detection
+    lines = cv2.HoughLines(edges, 1, np.pi/180, threshold=100)
+    
+    # Draw detected lines
+    line_image = image.copy()
+    if lines is not None:
+        for line in lines:
+            rho, theta = line[0]
+            a = np.cos(theta)
+            b = np.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * (a))
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * (a))
+            cv2.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+    
+    return line_image, lines
+
+def probabilistic_hough_lines(image):
+    """Use probabilistic Hough line detection for better performance"""
+    import cv2
+    import numpy as np
+    
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply edge detection
+    edges = cv2.Canny(gray, 50, 150)
+    
+    # Apply probabilistic Hough line detection
+    lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=50, 
+                           minLineLength=50, maxLineGap=10)
+    
+    # Draw detected line segments
+    line_image = image.copy()
+    if lines is not None:
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
+            cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    
+    return line_image, lines
+
+def analyze_line_continuity(lines):
+    """Analyze line continuity to detect breaks"""
+    import numpy as np
+    
+    if lines is None or len(lines) == 0:
+        return []
+    
+    # Group lines by angle similarity
+    angle_groups = {}
+    angle_tolerance = 5  # degrees
+    
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
+        
+        # Find closest angle group
+        found_group = False
+        for group_angle in angle_groups.keys():
+            if abs(angle - group_angle) < angle_tolerance:
+                angle_groups[group_angle].append(line)
+                found_group = True
+                break
+        
+        if not found_group:
+            angle_groups[angle] = [line]
+    
+    # Analyze each group for continuity
+    breaks = []
+    for angle, line_group in angle_groups.items():
+        if len(line_group) > 1:
+            # Check for gaps between line segments
+            sorted_lines = sorted(line_group, key=lambda x: x[0][0])  # Sort by x1
+            
+            for i in range(len(sorted_lines) - 1):
+                line1 = sorted_lines[i]
+                line2 = sorted_lines[i + 1]
+                
+                # Calculate gap between line endpoints
+                gap = np.sqrt((line2[0][0] - line1[0][2])**2 + 
+                            (line2[0][1] - line1[0][3])**2)
+                
+                if gap > 20:  # Threshold for significant gap
+                    breaks.append({
+                        'angle': angle,
+                        'gap': gap,
+                        'line1': line1,
+                        'line2': line2
+                    })
+    
+    return breaks</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Integrated Detection Pipeline</h2>
+                    <p>Combining multiple techniques in a systematic pipeline improves detection accuracy and robustness. The following pipeline integrates all discussed methods:</p>
+                    
+                    <div class="code-block">
+                        <pre><code>def integrated_defect_detection(image, reference_image=None):
+    """Integrated pipeline combining multiple detection techniques"""
+    import cv2
+    import numpy as np
+    
+    results = {}
+    
+    # 1. HSV Segmentation
+    segmented, copper_mask = hsv_segmentation(image)
+    results['segmented'] = segmented
+    results['copper_mask'] = copper_mask
+    
+    # 2. Edge Detection
+    edges = canny_edge_detection(segmented)
+    results['edges'] = edges
+    
+    # 3. Morphological Analysis
+    width_variations, eroded, dilated = morphological_analysis(edges)
+    results['width_variations'] = width_variations
+    
+    # 4. Line Detection
+    line_image, lines = probabilistic_hough_lines(segmented)
+    results['lines'] = lines
+    results['line_image'] = line_image
+    
+    # 5. Template Matching (if reference provided)
+    if reference_image is not None:
+        diff_image, similarity, locations = template_matching(reference_image, image)
+        results['template_diff'] = diff_image
+        results['similarity'] = similarity
+    
+    # 6. Defect Classification
+    defects = classify_defects(results)
+    results['defects'] = defects
+    
+    return results
+
+def classify_defects(results):
+    """Classify detected anomalies into defect types"""
+    defects = {
+        'open_circuits': [],
+        'short_circuits': [],
+        'micro_cracks': [],
+        'width_variations': [],
+        'missing_traces': []
+    }
+    
+    # Analyze edge continuity for open circuits
+    edge_breaks = analyze_edge_continuity(results['edges'])
+    defects['open_circuits'] = edge_breaks
+    
+    # Analyze width variations
+    width_contours, _ = cv2.findContours(results['width_variations'], 
+                                       cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    defects['width_variations'] = width_contours
+    
+    # Analyze line continuity
+    line_breaks = analyze_line_continuity(results['lines'])
+    defects['micro_cracks'] = line_breaks
+    
+    return defects</code></pre>
+                    </div>
+                    
+                    <h3>Pipeline Advantages:</h3>
+                    <ul>
+                        <li><strong>Redundancy:</strong> Multiple techniques catch different defect types</li>
+                        <li><strong>Robustness:</strong> Less sensitive to individual technique limitations</li>
+                        <li><strong>Accuracy:</strong> Cross-validation between methods reduces false positives</li>
+                        <li><strong>Completeness:</strong> Comprehensive coverage of defect types</li>
+                    </ul>
+                </section>
+
+                <div class="navigation-links">
+                    <a href="setup.html" class="btn btn-secondary">← Previous: Camera Setup</a>
+                    <a href="results.html" class="btn btn-primary">Next: Results & Analysis →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

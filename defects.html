@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Defects - PCB Defect Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>PCB Defect Detection</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="intro.html" class="nav-link">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="defects.html" class="nav-link active">Common Defects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="setup.html" class="nav-link">Camera Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="opencv.html" class="nav-link">OpenCV Techniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="machine-learning.html" class="nav-link">Machine Learning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="bibliography.html" class="nav-link">Bibliography</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <section class="content-header">
+            <div class="container">
+                <h1>Common PCB Trace Defects</h1>
+                <p>Understanding the types of defects that can occur in PCB traces and their visual characteristics</p>
+            </div>
+        </section>
+
+        <div class="content-body">
+            <div class="container">
+
+                <section class="content-section">
+                    <h2>Open Circuits (Complete Breaks)</h2>
+                    <p>Open circuits represent complete breaks in PCB traces where electrical continuity is lost. These defects are among the most critical as they completely prevent signal transmission.</p>
+                    
+                    <img src="images/open-circuit-defect.jpg" alt="PCB trace with open circuit defect" class="content-image">
+                    <p class="image-caption">Figure 3: Open circuit defect showing complete trace break. Source: PCB defect dataset <a href="bibliography.html#ref1" class="reference-link">[1]</a>.</p>
+                    
+                    <h3>Characteristics of Open Circuits:</h3>
+                    <ul>
+                        <li><strong>Visual Appearance:</strong> Complete gap in the trace with visible substrate material</li>
+                        <li><strong>Size Range:</strong> Typically 0.1mm to several millimeters wide</li>
+                        <li><strong>Detection Difficulty:</strong> Relatively easy to detect due to high contrast</li>
+                        <li><strong>Impact:</strong> Complete functional failure of affected circuit path</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        <pre><code>def detect_open_circuits(image):
+    """Detect open circuit defects using edge detection"""
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply Canny edge detection
+    edges = cv2.Canny(gray, 50, 150)
+    
+    # Find contours
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Filter contours that might represent open circuits
+    open_circuits = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 100:  # Minimum area threshold
+            open_circuits.append(contour)
+    
+    return open_circuits</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Short Circuits (Unwanted Connections)</h2>
+                    <p>Short circuits occur when traces that should be electrically isolated become connected, either through manufacturing defects or contamination.</p>
+                    
+                    <img src="images/short-circuit-defect.jpg" alt="PCB trace with short circuit defect" class="content-image">
+                    <p class="image-caption">Figure 4: Short circuit defect showing unwanted connection between traces. Source: PCB defect dataset <a href="bibliography.html#ref1" class="reference-link">[1]</a>.</p>
+                    
+                    <h3>Types of Short Circuits:</h3>
+                    <ul>
+                        <li><strong>Bridge Shorts:</strong> Copper bridges connecting adjacent traces</li>
+                        <li><strong>Contamination Shorts:</strong> Conductive debris creating unwanted connections</li>
+                        <li><strong>Design Shorts:</strong> Insufficient spacing between traces</li>
+                        <li><strong>Via Shorts:</strong> Defects in via holes connecting different layers</li>
+                    </ul>
+                    
+                    <h3>Detection Challenges:</h3>
+                    <p>Short circuits are particularly challenging to detect because:</p>
+                    <ul>
+                        <li>They may be very small (micro-shorts)</li>
+                        <li>Contamination can be transparent or low-contrast</li>
+                        <li>They may only be visible under specific lighting conditions</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Micro-Cracks</h2>
+                    <p>Micro-cracks are small fractures in PCB traces that may not immediately cause failure but can lead to intermittent connections or eventual failure under stress.</p>
+                    
+                    <img src="images/micro-crack-defect.jpg" alt="PCB trace with micro-crack defect" class="content-image">
+                    <p class="image-caption">Figure 5: Micro-crack defect in PCB trace requiring high-resolution detection. Source: Tiny defect detection research <a href="bibliography.html#ref2" class="reference-link">[2]</a>.</p>
+                    
+                    <h3>Micro-Crack Characteristics:</h3>
+                    <ul>
+                        <li><strong>Size:</strong> Typically 10-100 micrometers wide</li>
+                        <li><strong>Depth:</strong> May extend partially or completely through trace thickness</li>
+                        <li><strong>Detection Requirements:</strong> High-resolution imaging (minimum 5μm pixel size)</li>
+                        <li><strong>Stress Factors:</strong> Thermal cycling, mechanical stress, vibration</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        <pre><code>def detect_micro_cracks(image, min_crack_width=5):
+    """Detect micro-cracks using morphological operations"""
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+    
+    # Create structuring element for crack detection
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (min_crack_width, 1))
+    
+    # Apply morphological opening to detect thin features
+    opened = cv2.morphologyEx(blurred, cv2.MORPH_OPEN, kernel)
+    
+    # Find differences that might indicate cracks
+    diff = cv2.absdiff(blurred, opened)
+    
+    # Threshold to isolate potential cracks
+    _, cracks = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
+    
+    return cracks</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Missing Traces</h2>
+                    <p>Missing traces occur when portions of designed traces fail to be properly formed during the manufacturing process, often due to etching problems or photomask defects.</p>
+                    
+                    <h3>Common Causes:</h3>
+                    <ul>
+                        <li><strong>Etching Defects:</strong> Incomplete removal of copper in unwanted areas</li>
+                        <li><strong>Photomask Issues:</strong> Defects in the photomask used for trace definition</li>
+                        <li><strong>Process Variations:</strong> Inconsistent etching parameters</li>
+                        <li><strong>Contamination:</strong> Foreign materials preventing proper etching</li>
+                    </ul>
+                    
+                    <h3>Detection Methods:</h3>
+                    <p>Missing traces are typically detected using template matching techniques:</p>
+                    <ul>
+                        <li>Compare manufactured board to reference design</li>
+                        <li>Identify areas where expected traces are absent</li>
+                        <li>Use geometric analysis to verify trace completeness</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h2>Geometric Errors</h2>
+                    <p>Geometric errors refer to deviations from the intended trace dimensions, including width variations, spacing violations, and shape distortions.</p>
+                    
+                    <img src="images/geometric-errors.jpg" alt="PCB traces with geometric errors" class="content-image">
+                    <p class="image-caption">Figure 6: Geometric errors including width variations and spacing violations. Source: Design rule checking guidelines <a href="bibliography.html#ref4" class="reference-link">[4]</a>.</p>
+                    
+                    <h3>Types of Geometric Errors:</h3>
+                    <ul>
+                        <li><strong>Width Violations:</strong> Traces narrower or wider than design specifications</li>
+                        <li><strong>Spacing Violations:</strong> Insufficient clearance between adjacent traces</li>
+                        <li><strong>Shape Distortions:</strong> Non-rectangular trace shapes due to manufacturing issues</li>
+                        <li><strong>Via Misalignment:</strong> Vias not properly centered on trace intersections</li>
+                    </ul>
+                    
+                    <h3>Measurement Techniques:</h3>
+                    <div class="code-block">
+                        <pre><code>def measure_trace_width(image, trace_contour):
+    """Measure trace width using morphological operations"""
+    # Create binary mask of the trace
+    mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    cv2.fillPoly(mask, [trace_contour], 255)
+    
+    # Apply distance transform
+    dist_transform = cv2.distanceTransform(mask, cv2.DIST_L2, 5)
+    
+    # Find local maxima (center line)
+    local_maxima = cv2.dilate(dist_transform, None, iterations=1)
+    
+    # Calculate width as twice the distance from center to edge
+    width_profile = dist_transform[local_maxima == dist_transform]
+    average_width = np.mean(width_profile) * 2
+    
+    return average_width</code></pre>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h2>Defect Classification Summary</h2>
+                    <p>The following table summarizes the key characteristics of each defect type and their detection requirements:</p>
+                    
+                    <div class="defect-summary">
+                        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                            <thead>
+                                <tr style="background-color: #f7fafc;">
+                                    <th style="border: 1px solid #e2e8f0; padding: 0.75rem;">Defect Type</th>
+                                    <th style="border: 1px solid #e2e8f0; padding: 0.75rem;">Size Range</th>
+                                    <th style="border: 1px solid #e2e8f0; padding: 0.75rem;">Detection Difficulty</th>
+                                    <th style="border: 1px solid #e2e8f0; padding: 0.75rem;">Primary Method</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Open Circuits</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">0.1-5mm</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Easy</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Edge Detection</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Short Circuits</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">0.05-2mm</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Moderate</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Template Matching</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Micro-Cracks</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">10-100μm</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Difficult</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Morphological</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Missing Traces</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Variable</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Easy-Moderate</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Template Matching</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Geometric Errors</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Variable</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Moderate</td>
+                                    <td style="border: 1px solid #e2e8f0; padding: 0.75rem;">Morphological</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <div class="navigation-links">
+                    <a href="intro.html" class="btn btn-secondary">← Previous: Introduction</a>
+                    <a href="setup.html" class="btn btn-primary">Next: Camera Setup →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PCB Defect Detection Tutorial</h3>
+                    <p>A guide to automated visual inspection using classical computer vision techniques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="intro.html">Introduction</a></li>
+                        <li><a href="defects.html">Common Defects</a></li>
+                        <li><a href="opencv.html">OpenCV Techniques</a></li>
+                        <li><a href="interactive.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bibliography.html">Bibliography</a></li>
+                        <li><a href="https://opencv.org" target="_blank">OpenCV Documentation</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PCB Defect Detection Tutorial. Created for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
